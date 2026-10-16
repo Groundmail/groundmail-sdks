@@ -1,0 +1,40 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "groundmail"
+version = "0.8.3"
+description = "Groundmail transactional email API client for Python"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+authors = [{ name = "Groundmail" }]
+keywords = ["email", "transactional", "groundmail"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+]
+dependencies = []
+
+[project.urls]
+Homepage = "https://groundmail.dev"
+Documentation = "https://docs.groundmail.dev/sdks/python"
+Repository = "https://github.com/Groundmail/groundmail-sdks"
+Issues = "https://github.com/Groundmail/groundmail-sdks/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["groundmail"]
+
+[project.optional-dependencies]
+django = ["django>=4.2"]
+dev = ["pytest>=8.0", "django>=4.2"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

@@ -1,0 +1,66 @@
+{
+  "name": "groundmail/laravel",
+  "description": "Laravel integration for the Groundmail transactional email API",
+  "type": "library",
+  "license": "MIT",
+  "keywords": [
+    "laravel",
+    "email",
+    "transactional",
+    "groundmail"
+  ],
+  "authors": [
+    {
+      "name": "Groundmail"
+    }
+  ],
+  "homepage": "https://groundmail.dev",
+  "support": {
+    "docs": "https://docs.groundmail.dev/frameworks/laravel",
+    "issues": "https://github.com/Groundmail/groundmail-sdks/issues",
+    "source": "https://github.com/Groundmail/groundmail-laravel"
+  },
+  "require": {
+    "php": ">=8.1",
+    "illuminate/mail": "^10.0|^11.0|^12.0",
+    "illuminate/support": "^10.0|^11.0|^12.0",
+    "groundmail/groundmail": "^0.8.2",
+    "groundmail/symfony-mailer": "^0.8.2",
+    "symfony/mailer": "^6.2|^7.0",
+    "symfony/mime": "^6.2|^7.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^11.0"
+  },
+  "config": {
+    "platform": {
+      "php": "8.3.0"
+    },
+    "sort-packages": true
+  },
+  "autoload": {
+    "psr-4": {
+      "Groundmail\\Laravel\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Groundmail\\Laravel\\Tests\\": "tests/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Groundmail\\Laravel\\GroundmailServiceProvider"
+      ],
+      "aliases": {
+        "Groundmail": "Groundmail\\Laravel\\Facades\\Groundmail"
+      }
+    }
+  },
+  "scripts": {
+    "test": "phpunit"
+  },
+  "minimum-stability": "stable",
+  "prefer-stable": true
+}
