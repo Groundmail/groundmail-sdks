@@ -1,6 +1,31 @@
-# groundmail/symfony-mailer
+<p align="center">
+  <a href="https://groundmail.dev">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://app.groundmail.dev/images/github/readme-logo-dark.png">
+      <img alt="Groundmail" src="https://app.groundmail.dev/images/github/readme-logo-light.png" height="44">
+    </picture>
+  </a>
+</p>
 
-[Symfony Mailer](https://symfony.com/doc/current/mailer.html) transport for [Groundmail](https://groundmail.dev) transactional email (HTTP API).
+<h1 align="center">Groundmail for Symfony Mailer</h1>
+
+<p align="center">
+  A <a href="https://symfony.com/doc/current/mailer.html">Symfony Mailer</a> transport for the Groundmail transactional email API.<br>
+  Send over the HTTP API with a DSN, no SMTP needed.
+</p>
+
+<p align="center">
+  <a href="https://packagist.org/packages/groundmail/symfony-mailer"><img alt="Packagist" src="https://img.shields.io/packagist/v/groundmail/symfony-mailer?color=a3461f&label=packagist"></a>
+  <a href="./LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-b48f62"></a>
+</p>
+
+<p align="center">
+  <a href="https://docs.groundmail.dev/frameworks/symfony">Docs</a> ·
+  <a href="https://app.groundmail.dev/signup">Get a free account</a> ·
+  <a href="https://groundmail.dev">groundmail.dev</a>
+</p>
+
+---
 
 ## Install
 
@@ -12,7 +37,18 @@ composer require groundmail/symfony-mailer
 export GROUNDMAIL_API_KEY=gm_your_key_here
 ```
 
-## Usage
+## Symfony Framework
+
+Register `GroundmailTransportFactory` as a `mailer.transport_factory` service and set the DSN:
+
+```yaml
+# config/packages/mailer.yaml
+framework:
+  mailer:
+    dsn: 'groundmail+api://%env(GROUNDMAIL_API_KEY)%@default'
+```
+
+## Standalone
 
 ```php
 use Groundmail\Client;
@@ -31,7 +67,7 @@ $email = (new Email())
 $mailer->send($email);
 ```
 
-### DSN
+Or build it from a DSN:
 
 ```php
 use Groundmail\Symfony\Transport\GroundmailTransportFactory;
@@ -47,27 +83,37 @@ $transport = Transport::fromDsns(
 // Or: groundmail://default?api_key=gm_…
 ```
 
-In Symfony Framework, register `GroundmailTransportFactory` as a `mailer.transport_factory` service and set:
-
-```yaml
-# config/packages/mailer.yaml
-framework:
-  mailer:
-    dsn: 'groundmail+api://%env(GROUNDMAIL_API_KEY)%@default'
-```
-
 ## Headers
 
 | Header | Purpose |
 |--------|---------|
 | `X-Groundmail-Tag` | `name=value` tag (repeatable) |
-| `X-Groundmail-Idempotency-Key` | Idempotency key |
-| `X-Groundmail-Scheduled-At` | ISO 8601 schedule |
+| `X-Groundmail-Idempotency-Key` | Send once, even when your code retries |
+| `X-Groundmail-Scheduled-At` | ISO 8601 time to send later |
 
-## Docs
+## Contributing
 
-https://docs.groundmail.dev/frameworks/symfony
+Found a bug or want something added? [Open an issue](https://github.com/Groundmail/groundmail-sdks/issues). This code is published here on each release, so we port fixes rather than merging pull requests directly.
 
-## License
+## Why Groundmail
 
-MIT
+- **Our own mail servers and IP space.** Your password resets and receipts don't share a pool with bulk marketing senders.
+- **Transactional email only.** No newsletters or cold outreach on the platform, which keeps the sending reputation clean.
+- **Start free.** 3,000 emails a month on the Free plan; Pro is 50,000 emails for $20/month. Dedicated IPs on Scale.
+- **Built for code and for agents.** REST API, SMTP, SDKs for Node, Python, Go, PHP and Ruby, a CLI, and an MCP server for Claude, ChatGPT and Cursor.
+
+## All Groundmail libraries
+
+| Use | Package |
+|-----|---------|
+| Node.js / TypeScript | [`groundmail`](https://www.npmjs.com/package/groundmail) on npm |
+| Python, Go, Ruby | [Groundmail/groundmail-sdks](https://github.com/Groundmail/groundmail-sdks) |
+| PHP | [Groundmail/groundmail-php](https://github.com/Groundmail/groundmail-php) |
+| Laravel | [Groundmail/groundmail-laravel](https://github.com/Groundmail/groundmail-laravel) |
+| Symfony Mailer | [Groundmail/groundmail-symfony-mailer](https://github.com/Groundmail/groundmail-symfony-mailer) |
+| Nodemailer | [Groundmail/groundmail-nodemailer](https://github.com/Groundmail/groundmail-nodemailer) |
+| CLI | [`groundmail-cli`](https://www.npmjs.com/package/groundmail-cli) on npm |
+| MCP server (Claude, ChatGPT, Cursor) | [Groundmail/groundmail-mcp](https://github.com/Groundmail/groundmail-mcp) |
+| Agent skills and Claude Code plugin | [Groundmail/groundmail-skills](https://github.com/Groundmail/groundmail-skills) |
+
+[Website](https://groundmail.dev) · [Docs](https://docs.groundmail.dev) · [Pricing](https://groundmail.dev/pricing) · [Sign up free](https://app.groundmail.dev/signup)
