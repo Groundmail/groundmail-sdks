@@ -4,14 +4,14 @@ Official thin HTTP clients for the [Groundmail](https://groundmail.dev) transact
 
 | Language | Path | Install |
 |----------|------|---------|
-| Python | [`python/`](./python) | Coming soon (not on PyPI yet) |
+| Python | [`python/`](./python) | `pip install groundmail` |
 | Go | [`go/`](./go) | `go get github.com/Groundmail/groundmail-sdks/go@v0.8.2` |
-| PHP | [`php/`](./php) (source mirror) · [Packagist repo](https://github.com/Groundmail/groundmail-php) | Coming soon (not on Packagist yet) |
-| Symfony Mailer | [`symfony-mailer/`](./symfony-mailer) (source mirror) · [Packagist repo](https://github.com/Groundmail/groundmail-symfony-mailer) | Coming soon (not on Packagist yet) |
-| Laravel | [`laravel/`](./laravel) (source mirror) · [Packagist repo](https://github.com/Groundmail/groundmail-laravel) | Coming soon (not on Packagist yet) |
-| Ruby | [`ruby/`](./ruby) | Coming soon (not on RubyGems yet) |
+| PHP | [`php/`](./php) (source mirror) · [Packagist repo](https://github.com/Groundmail/groundmail-php) | `composer require groundmail/groundmail` |
+| Symfony Mailer | [`symfony-mailer/`](./symfony-mailer) (source mirror) · [Packagist repo](https://github.com/Groundmail/groundmail-symfony-mailer) | `composer require groundmail/symfony-mailer` |
+| Laravel | [`laravel/`](./laravel) (source mirror) · [Packagist repo](https://github.com/Groundmail/groundmail-laravel) | `composer require groundmail/laravel` |
+| Ruby | [`ruby/`](./ruby) | `gem install groundmail` |
 
-Until a client is published, call the REST API directly: see [docs.groundmail.dev](https://docs.groundmail.dev).
+Docs: [docs.groundmail.dev](https://docs.groundmail.dev)
 
 ## Development
 
