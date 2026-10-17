@@ -21,13 +21,18 @@ result = tx.emails.send(
 puts result["id"], result["status"]
 ```
 
-## Rails ActionMailer
+## Rails Action Mailer
+
+The gem registers a `:groundmail` delivery method when Rails is loaded:
 
 ```ruby
+# config/environments/production.rb
 config.action_mailer.delivery_method = :groundmail
 config.action_mailer.groundmail_settings = {
   api_key: ENV.fetch("GROUNDMAIL_API_KEY")
 }
 ```
+
+Your mailers and `deliver_later` calls stay the same. Rails guide: https://docs.groundmail.dev/frameworks/rails
 
 Docs: https://docs.groundmail.dev/sdks/ruby

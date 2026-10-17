@@ -8,8 +8,9 @@ Gem::Specification.new do |spec|
   spec.authors = ["Groundmail"]
   spec.email = ["support@groundmail.dev"]
 
-  spec.summary = "Groundmail transactional email API client for Ruby"
-  spec.description = "Official Ruby client for the Groundmail REST API."
+  spec.summary = "Groundmail transactional email for Ruby and Rails (Action Mailer delivery method included)"
+  spec.description = "Official Ruby client for the Groundmail transactional email API, with a Rails Action Mailer " \
+                     "delivery method: set config.action_mailer.delivery_method = :groundmail."
   spec.homepage = "https://groundmail.dev"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 3.1.0"
