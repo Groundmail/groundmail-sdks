@@ -195,6 +195,8 @@ def _serialize_send_params(params: dict[str, Any]) -> dict[str, Any]:
         "tag",
         "template",
         "attachments",
+        "category",
+        "tenant",
     ):
         if key in params and params[key] is not None:
             mapped = "reply_to" if key == "replyTo" else key

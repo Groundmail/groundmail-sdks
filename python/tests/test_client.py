@@ -39,6 +39,26 @@ def test_emails_send(client: Groundmail) -> None:
     assert request.get_header("Authorization") == "Bearer gm_test_key"
 
 
+def test_emails_send_passes_category_and_tenant(client: Groundmail) -> None:
+    response = MagicMock()
+    response.read.return_value = json.dumps({"id": "msg_1", "status": "sent"}).encode()
+    response.__enter__.return_value = response
+
+    with patch("urllib.request.urlopen", return_value=response) as urlopen:
+        client.emails.send(
+            from_="a@example.com",
+            to="b@example.com",
+            subject="Hi",
+            text="Hi",
+            category="product",
+            tenant="cust_a",
+        )
+
+    body = json.loads(urlopen.call_args.args[0].data)
+    assert body["category"] == "product"
+    assert body["tenant"] == "cust_a"
+
+
 def test_http_error_raises_super_send_tx_error(client: Groundmail) -> None:
     import urllib.error
 

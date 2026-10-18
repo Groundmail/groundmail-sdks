@@ -56,7 +56,7 @@ module Groundmail
         "to" => params["to"] || params[:to]
       }
 
-      %w[subject html text reply_to replyTo cc bcc tags headers tag template attachments].each do |key|
+      %w[subject html text reply_to replyTo cc bcc tags headers tag template attachments category tenant].each do |key|
         value = params[key] || params[key.to_sym]
         next if value.nil?
 
