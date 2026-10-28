@@ -1,6 +1,6 @@
 # Groundmail Go SDK
 
-Official Go client for the [Groundmail](https://groundmail.dev) transactional email API.
+Official Go client for the [Groundmail](https://groundmail.dev?utm_source=github&utm_medium=readme&utm_campaign=groundmail-sdks) transactional email API.
 
 ```bash
 go get github.com/Groundmail/groundmail-sdks/go@v0.8.2
@@ -36,4 +36,4 @@ func main() {
 }
 ```
 
-Docs: https://docs.groundmail.dev/sdks/go
+Docs: https://docs.groundmail.dev/sdks/go?utm_source=github&utm_medium=readme&utm_campaign=groundmail-sdks

@@ -1,6 +1,6 @@
 # Groundmail Ruby SDK
 
-Official Ruby client for the [Groundmail](https://groundmail.dev) transactional email API.
+Official Ruby client for the [Groundmail](https://groundmail.dev?utm_source=github&utm_medium=readme&utm_campaign=groundmail-sdks) transactional email API.
 
 ```bash
 gem install groundmail
@@ -33,6 +33,6 @@ config.action_mailer.groundmail_settings = {
 }
 ```
 
-Your mailers and `deliver_later` calls stay the same. Rails guide: https://docs.groundmail.dev/frameworks/rails
+Your mailers and `deliver_later` calls stay the same. Rails guide: https://docs.groundmail.dev/frameworks/rails?utm_source=github&utm_medium=readme&utm_campaign=groundmail-sdks
 
-Docs: https://docs.groundmail.dev/sdks/ruby
+Docs: https://docs.groundmail.dev/sdks/ruby?utm_source=github&utm_medium=readme&utm_campaign=groundmail-sdks
