@@ -1,7 +1,7 @@
 {
   "name": "groundmail/symfony-mailer",
   "description": "Symfony Mailer transport for the Groundmail transactional email API",
-  "version": "0.8.3",
+  "version": "0.8.4",
   "type": "library",
   "license": "MIT",
   "keywords": [
