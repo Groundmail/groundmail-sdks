@@ -7,6 +7,7 @@ namespace Groundmail;
 final class HttpClient
 {
     public const DEFAULT_API_BASE_URL = 'https://api.groundmail.dev';
+    public const VERSION = '0.8.6';
 
     /** @param callable(string, string, ?array<string, mixed>, array<string, string>): array<string, mixed>|null $transport */
     public function __construct(
@@ -30,6 +31,8 @@ final class HttpClient
         $requestHeaders = array_merge([
             'Authorization' => 'Bearer '.$this->apiKey,
             'Content-Type' => 'application/json',
+            // Tells our SDK from a plain HTTP call.
+            'User-Agent' => 'groundmail-php/'.self::VERSION.' php/'.PHP_VERSION,
         ], $headers);
 
         if ($this->transport !== null) {

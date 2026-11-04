@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import re
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -12,6 +13,25 @@ from groundmail.errors import GroundmailError
 @pytest.fixture
 def client() -> Groundmail:
     return Groundmail("gm_test_key", base_url="https://api.example.com")
+
+
+def _response(body: bytes = b"{}") -> MagicMock:
+    response = MagicMock()
+    response.read.return_value = body
+    response.__enter__.return_value = response
+    return response
+
+
+def test_sends_its_user_agent(client: Groundmail) -> None:
+    with patch("urllib.request.urlopen", return_value=_response()) as urlopen:
+        client.request("GET", "/domains")
+    assert re.fullmatch(r"groundmail-python/\S+ python/\S+", urlopen.call_args[0][0].get_header("User-agent"))
+
+
+def test_a_callers_user_agent_wins(client: Groundmail) -> None:
+    with patch("urllib.request.urlopen", return_value=_response()) as urlopen:
+        client.request("GET", "/domains", headers={"User-Agent": "my-app/1.0"})
+    assert urlopen.call_args[0][0].get_header("User-agent") == "my-app/1.0"
 
 
 def test_requires_gm_prefix() -> None:

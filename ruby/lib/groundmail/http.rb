@@ -19,7 +19,9 @@ module Groundmail
     def request(method, path, body: nil, headers: {})
       request_headers = {
         "Authorization" => "Bearer #{@api_key}",
-        "Content-Type" => "application/json"
+        "Content-Type" => "application/json",
+        # Tells our SDK from a plain HTTP call.
+        "User-Agent" => "groundmail-ruby/#{VERSION} ruby/#{RUBY_VERSION}"
       }.merge(headers)
 
       return @transport.call(method, path, body, request_headers) if @transport

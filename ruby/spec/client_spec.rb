@@ -4,6 +4,23 @@ require "minitest/autorun"
 require "groundmail"
 
 class ClientTest < Minitest::Test
+  def test_sends_its_user_agent
+    sent = []
+    http = Groundmail::HttpClient.new(
+      "gm_test_key",
+      transport: lambda do |_method, _path, _body, headers|
+        sent << headers
+        {}
+      end
+    )
+
+    http.request("GET", "/domains")
+    http.request("GET", "/domains", headers: { "User-Agent" => "my-app/1.0" })
+
+    assert_equal "groundmail-ruby/#{Groundmail::VERSION} ruby/#{RUBY_VERSION}", sent[0]["User-Agent"]
+    assert_equal "my-app/1.0", sent[1]["User-Agent"]
+  end
+
   def test_requires_gm_prefix
     error = assert_raises(ArgumentError) { Groundmail::Client.new("bad") }
     assert_match(/gm_/, error.message)

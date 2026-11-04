@@ -7,9 +7,27 @@ namespace Groundmail\Tests;
 use PHPUnit\Framework\TestCase;
 use Groundmail\Client;
 use Groundmail\GroundmailError;
+use Groundmail\HttpClient;
 
 final class ClientTest extends TestCase
 {
+    public function testSendsItsUserAgent(): void
+    {
+        $sent = [];
+        $transport = function (string $method, string $path, ?array $body, array $headers) use (&$sent): array {
+            $sent[] = $headers;
+
+            return [];
+        };
+        $http = new HttpClient('gm_test_key', transport: $transport);
+
+        $http->request('GET', '/domains');
+        $http->request('GET', '/domains', null, ['User-Agent' => 'my-app/1.0']);
+
+        self::assertSame('groundmail-php/'.HttpClient::VERSION.' php/'.PHP_VERSION, $sent[0]['User-Agent']);
+        self::assertSame('my-app/1.0', $sent[1]['User-Agent']);
+    }
+
     public function testRequiresStxPrefix(): void
     {
         $this->expectException(\InvalidArgumentException::class);

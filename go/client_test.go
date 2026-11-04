@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	groundmail "github.com/Groundmail/groundmail-sdks/go"
@@ -12,6 +13,34 @@ import (
 func TestNewRequiresStxPrefix(t *testing.T) {
 	if _, err := groundmail.New("bad"); err == nil {
 		t.Fatal("expected error for invalid api key prefix")
+	}
+}
+
+func TestSendsItsUserAgent(t *testing.T) {
+	var got string
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		got = r.Header.Get("User-Agent")
+		_ = json.NewEncoder(w).Encode(map[string]any{})
+	}))
+	defer server.Close()
+
+	client, err := groundmail.NewClient("gm_test", server.URL, server.Client())
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if _, err := client.Request(http.MethodGet, "/domains", nil, nil); err != nil {
+		t.Fatal(err)
+	}
+	if want := "groundmail-go/" + groundmail.Version + " go/"; !strings.HasPrefix(got, want) {
+		t.Fatalf("User-Agent = %q, want prefix %q", got, want)
+	}
+
+	if _, err := client.Request(http.MethodGet, "/domains", nil, map[string]string{"User-Agent": "my-app/1.0"}); err != nil {
+		t.Fatal(err)
+	}
+	if got != "my-app/1.0" {
+		t.Fatalf("a caller's User-Agent should win, got %q", got)
 	}
 }
 

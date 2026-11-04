@@ -2,11 +2,13 @@ from __future__ import annotations
 
 import base64
 import json
+import platform
 import time
 import urllib.error
 import urllib.parse
 import urllib.request
 from datetime import datetime
+from importlib import metadata
 from typing import Any, Callable, Optional
 
 from groundmail.errors import GroundmailError
@@ -19,6 +21,18 @@ TokenProvider = Callable[[], Any]
 _TOKEN_REFRESH_SKEW_SECONDS = 120
 # Tokens with no known expiry are reused this long at most.
 _TOKEN_DEFAULT_TTL_SECONDS = 300
+
+
+def _user_agent() -> str:
+    """`groundmail-python/<version> python/<version>`: tells our SDK from a plain HTTP call."""
+    try:
+        version = metadata.version("groundmail")
+    except metadata.PackageNotFoundError:
+        version = "0"
+    return f"groundmail-python/{version} python/{platform.python_version()}"
+
+
+_USER_AGENT = _user_agent()
 
 
 def _jwt_expiry(token: str) -> Optional[float]:
@@ -120,6 +134,7 @@ class HttpClient:
         req_headers = {
             "Authorization": f"Bearer {self._bearer(force_refresh)}",
             "Content-Type": "application/json",
+            "User-Agent": _USER_AGENT,
             **(headers or {}),
         }
         if body is not None:

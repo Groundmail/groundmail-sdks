@@ -7,10 +7,17 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"runtime"
 	"strings"
 )
 
 const DefaultAPIBaseURL = "https://api.groundmail.dev"
+
+// Version is this SDK's release. Go tags follow the Python package's version.
+const Version = "0.9.3"
+
+// userAgent tells our SDK from a plain HTTP call.
+var userAgent = "groundmail-go/" + Version + " go/" + strings.TrimPrefix(runtime.Version(), "go")
 
 type Client struct {
 	APIKey     string
@@ -64,6 +71,7 @@ func (c *Client) Request(method, path string, body any, headers map[string]strin
 	}
 	req.Header.Set("Authorization", "Bearer "+c.APIKey)
 	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("User-Agent", userAgent)
 	for key, value := range headers {
 		req.Header.Set(key, value)
 	}
