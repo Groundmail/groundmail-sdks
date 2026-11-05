@@ -11,7 +11,7 @@
 
 <p align="center">
   Official clients for the Groundmail transactional email API:<br>
-  Python, Go, Ruby, PHP, Laravel and Symfony Mailer. Node.js is on npm as <a href="https://www.npmjs.com/package/groundmail"><code>groundmail</code></a>.
+  Python, Go, Rust, Ruby, PHP, Laravel and Symfony Mailer. Node.js is on npm as <a href="https://www.npmjs.com/package/groundmail"><code>groundmail</code></a>.
 </p>
 
 <p align="center">
@@ -36,6 +36,7 @@
 |----------|---------|--------|
 | Python (Django backend included) | `pip install groundmail` | [`python/`](./python) |
 | Go | `go get github.com/Groundmail/groundmail-sdks/go` | [`go/`](./go) |
+| Rust | `cargo add groundmail` | [`rust/`](./rust) |
 | Ruby | `gem install groundmail` | [`ruby/`](./ruby) |
 | PHP | `composer require groundmail/groundmail` | [`php/`](./php) · [groundmail-php](https://github.com/Groundmail/groundmail-php) |
 | Laravel | `composer require groundmail/laravel` | [`laravel/`](./laravel) · [groundmail-laravel](https://github.com/Groundmail/groundmail-laravel) |
