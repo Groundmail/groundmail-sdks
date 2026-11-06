@@ -1,6 +1,6 @@
 # Groundmail Rust SDK
 
-Official Rust client for the [Groundmail](https://groundmail.dev?utm_source=github&utm_medium=readme&utm_campaign=groundmail-sdks) transactional email API.
+Official Rust client for the [Groundmail](https://groundmail.dev?utm_source=github&utm_medium=readme&utm_campaign=groundmail-sdks) API.
 
 ```bash
 cargo add groundmail

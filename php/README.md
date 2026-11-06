@@ -10,7 +10,7 @@
 <h1 align="center">Groundmail PHP SDK</h1>
 
 <p align="center">
-  The official PHP client for the Groundmail transactional email API.<br>
+  The official PHP client for the Groundmail API.<br>
   Send password resets, receipts and alerts in a few lines of PHP.
 </p>
 
@@ -60,8 +60,8 @@ Found a bug or want something added? [Open an issue](https://github.com/Groundma
 
 ## Why Groundmail
 
-- **Our own mail servers and IP space.** Your password resets and receipts don't share a pool with bulk marketing senders.
-- **Transactional email only.** No newsletters or cold outreach on the platform, which keeps the sending reputation clean.
+- **Separate streams.** Your sign-in codes never wait behind a newsletter.
+- **We run the servers.** Our own mail servers and IP space, so we can see and fix delivery problems ourselves.
 - **Start free.** Free covers 3,000 emails a month. After that, pay as you go is $15 a month with 20,000 emails included, then from $0.70 per 1,000, less as you grow. [Pricing](https://groundmail.dev/pricing/?utm_source=github&utm_medium=readme&utm_campaign=groundmail-sdks)
 - **Built for code and for agents.** REST API, SMTP, SDKs for Node, Python, Go, PHP and Ruby, a CLI, and an MCP server for Claude, ChatGPT and Cursor.
 
