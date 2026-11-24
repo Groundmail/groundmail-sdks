@@ -125,4 +125,57 @@ final class ClientTest extends TestCase
             'html' => '<p>Hi</p>',
         ]);
     }
+
+    /** @param list<array<string, mixed>> $sent */
+    private function validateClient(array &$sent): Client
+    {
+        return new Client(
+            'gm_test_key',
+            'https://api.example.com',
+            function (string $method, string $path, ?array $body, array $headers) use (&$sent): array {
+                $sent[] = compact('method', 'path', 'body');
+
+                return ['email' => 'ada@gmial.com', 'verdict' => 'invalid', 'suggestion' => 'ada@gmail.com'];
+            },
+        );
+    }
+
+    public function testValidate(): void
+    {
+        $sent = [];
+        $result = $this->validateClient($sent)->validate('ada@gmial.com');
+
+        self::assertSame('invalid', $result['verdict']);
+        self::assertSame(['method' => 'POST', 'path' => '/validate', 'body' => ['email' => 'ada@gmial.com']], $sent[0]);
+    }
+
+    public function testValidateWithMailboxCheckAndTenant(): void
+    {
+        $sent = [];
+        $this->validateClient($sent)->validate('ada@acme.com', mailboxCheck: true, tenant: 'cust_1');
+
+        self::assertSame(['email' => 'ada@acme.com', 'mailbox_check' => true, 'tenant' => 'cust_1'], $sent[0]['body']);
+    }
+
+    public function testValidateBatch(): void
+    {
+        $sent = [];
+        $this->validateClient($sent)->validateBatch(['a@acme.com', 'b@acme.com'], mailboxCheck: true);
+
+        self::assertSame('/validate/batch', $sent[0]['path']);
+        self::assertSame(['emails' => ['a@acme.com', 'b@acme.com'], 'mailbox_check' => true], $sent[0]['body']);
+    }
+
+    public function testValidateErrorRaises(): void
+    {
+        $client = new Client(
+            'gm_test_key',
+            transport: function (): array {
+                throw GroundmailError::fromResponse(401, ['error' => ['message' => 'Invalid API key']]);
+            },
+        );
+
+        $this->expectException(GroundmailError::class);
+        $client->validate('a@b.com');
+    }
 }

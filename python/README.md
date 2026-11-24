@@ -21,6 +21,18 @@ result = tx.emails.send(
 print(result["id"], result["status"])
 ```
 
+## Validate an address
+
+Check an address before you accept it, for example on a signup form. It's free and sends nothing:
+
+```python
+result = tx.validate("ada@gmial.com")
+print(result["verdict"], result["reasons"], result["suggestion"])
+# risky ['disposable', 'possible_typo'] ada@gmail.com
+```
+
+`verdict` is `valid`, `risky` or `invalid`. Pass `mailbox_check=True` to also confirm the mailbox exists ($0.01 per answer marked `billed`), and `tx.validate_batch([...])` for up to 100 addresses at once. See https://docs.groundmail.dev/validation?utm_source=github&utm_medium=readme&utm_campaign=groundmail-sdks
+
 ## Azure managed identity (no API key)
 
 On Azure, pass a token provider instead of a key. The client caches the token until shortly before it expires:

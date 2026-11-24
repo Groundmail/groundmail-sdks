@@ -1,7 +1,7 @@
 {
   "name": "groundmail/groundmail",
   "description": "Groundmail transactional email API client for PHP",
-  "version": "0.8.6",
+  "version": "0.8.7",
   "type": "library",
   "license": "MIT",
   "keywords": ["email", "transactional", "groundmail"],

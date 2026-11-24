@@ -102,3 +102,42 @@ def test_http_error_raises_super_send_tx_error(client: Groundmail) -> None:
 
     assert exc.value.status == 401
     assert exc.value.message == "Invalid API key"
+
+
+def test_validate(client: Groundmail) -> None:
+    body = {"email": "ada@gmial.com", "verdict": "invalid", "reasons": ["no_mail_server", "possible_typo"]}
+    with patch("urllib.request.urlopen", return_value=_response(json.dumps(body).encode())) as urlopen:
+        result = client.validate("ada@gmial.com")
+
+    assert result == body
+    request = urlopen.call_args.args[0]
+    assert request.full_url == "https://api.example.com/validate"
+    assert request.method == "POST"
+    assert json.loads(request.data) == {"email": "ada@gmial.com"}
+
+
+def test_validate_with_mailbox_check_and_tenant(client: Groundmail) -> None:
+    with patch("urllib.request.urlopen", return_value=_response()) as urlopen:
+        client.validate("ada@acme.com", mailbox_check=True, tenant="cust_1")
+    assert json.loads(urlopen.call_args.args[0].data) == {"email": "ada@acme.com", "mailbox_check": True, "tenant": "cust_1"}
+
+
+def test_validate_batch(client: Groundmail) -> None:
+    with patch("urllib.request.urlopen", return_value=_response(b'{"data": []}')) as urlopen:
+        result = client.validate_batch(["a@acme.com", "b@acme.com"], mailbox_check=True)
+
+    assert result == {"data": []}
+    request = urlopen.call_args.args[0]
+    assert request.full_url == "https://api.example.com/validate/batch"
+    assert json.loads(request.data) == {"emails": ["a@acme.com", "b@acme.com"], "mailbox_check": True}
+
+
+def test_validate_error_raises(client: Groundmail) -> None:
+    import io
+    import urllib.error
+
+    error = urllib.error.HTTPError(
+        "https://api.example.com/validate", 401, "Unauthorized", {}, io.BytesIO(b'{"error": {"message": "Invalid API key", "code": "unauthorized"}}')
+    )
+    with patch("urllib.request.urlopen", side_effect=error), pytest.raises(GroundmailError):
+        client.validate("a@b.com")

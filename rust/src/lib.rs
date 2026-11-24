@@ -19,7 +19,7 @@ mod webhooks;
 
 pub use client::{Client, Domains, Emails, Suppressions, Templates, Webhooks, DEFAULT_BASE_URL};
 pub use error::Error;
-pub use types::{ListOptions, SendEmail, SendResponse};
+pub use types::{ListOptions, SendEmail, SendResponse, ValidateOptions};
 pub use webhooks::{
     verify_webhook_signature, verify_webhook_signature_with_tolerance, DEFAULT_TOLERANCE,
 };

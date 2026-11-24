@@ -40,3 +40,37 @@ class Groundmail:
 
     def request(self, method: str, path: str, *, body: Any = None, headers: dict[str, str] | None = None) -> Any:
         return self._http.request(method, path, body=body, headers=headers)
+
+    def validate(self, email: str, *, mailbox_check: bool = False, tenant: str | None = None) -> dict[str, Any]:
+        """Check one address before you accept it (for example on a signup form).
+
+        Free, and sends nothing: syntax, mail server, disposable and role addresses,
+        recent hard bounces, and a typo suggestion. Returns ``verdict`` (``valid``,
+        ``risky`` or ``invalid``), ``reasons`` and ``suggestion``.
+
+        ``mailbox_check=True`` also confirms the mailbox exists: $0.01 per answer marked
+        ``billed`` (pay as you go or Dedicated; needs an ``emails:send`` key).
+        ``tenant`` attributes mailbox checks to one of your tenants.
+        """
+        return self._http.request("POST", "/validate", body={"email": email, **_validate_options(mailbox_check, tenant)})
+
+    def validate_batch(
+        self, emails: list[str], *, mailbox_check: bool = False, tenant: str | None = None
+    ) -> dict[str, Any]:
+        """Check up to 100 addresses in one request, each answered as ``validate`` would.
+
+        Returns ``{"data": [...]}``, one result per address in order. With
+        ``mailbox_check=True``, each answer marked ``billed`` costs $0.01.
+        """
+        return self._http.request(
+            "POST", "/validate/batch", body={"emails": emails, **_validate_options(mailbox_check, tenant)}
+        )
+
+
+def _validate_options(mailbox_check: bool, tenant: str | None) -> dict[str, Any]:
+    options: dict[str, Any] = {}
+    if mailbox_check:
+        options["mailbox_check"] = True
+    if tenant:
+        options["tenant"] = tenant
+    return options

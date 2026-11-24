@@ -3,7 +3,7 @@ use reqwest::{Method, RequestBuilder};
 use serde::de::DeserializeOwned;
 use serde_json::{json, Value};
 
-use crate::types::{ListOptions, SendEmail, SendResponse};
+use crate::types::{ListOptions, SendEmail, SendResponse, ValidateOptions};
 use crate::Error;
 
 pub const DEFAULT_BASE_URL: &str = "https://api.groundmail.dev";
@@ -79,6 +79,34 @@ impl Client {
 
     pub fn suppressions(&self) -> Suppressions<'_> {
         Suppressions { client: self }
+    }
+
+    /// Checks one address before you accept it (for example on a signup form). Free, and
+    /// sends nothing: syntax, mail server, disposable and role addresses, recent hard
+    /// bounces, and a typo suggestion. The result has `verdict` (`valid`, `risky` or
+    /// `invalid`), `reasons` and `suggestion`.
+    pub async fn validate(&self, email: &str, options: &ValidateOptions) -> Result<Value, Error> {
+        let mut body = options.fields();
+        body.insert("email".to_owned(), Value::String(email.to_owned()));
+        self.send_json(Method::POST, "/validate", &Value::Object(body))
+            .await
+    }
+
+    /// Checks up to 100 addresses in one request, each answered as [`Client::validate`]
+    /// would. The result's `data` holds one result per address, in order.
+    pub async fn validate_batch<S: AsRef<str>>(
+        &self,
+        emails: &[S],
+        options: &ValidateOptions,
+    ) -> Result<Value, Error> {
+        let mut body = options.fields();
+        let emails = emails
+            .iter()
+            .map(|email| Value::String(email.as_ref().to_owned()))
+            .collect();
+        body.insert("emails".to_owned(), Value::Array(emails));
+        self.send_json(Method::POST, "/validate/batch", &Value::Object(body))
+            .await
     }
 
     /// Calls any endpoint, for what the typed methods don't cover yet.

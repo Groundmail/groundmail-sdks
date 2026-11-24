@@ -7,7 +7,7 @@ namespace Groundmail;
 final class HttpClient
 {
     public const DEFAULT_API_BASE_URL = 'https://api.groundmail.dev';
-    public const VERSION = '0.8.6';
+    public const VERSION = '0.8.7';
 
     /** @param callable(string, string, ?array<string, mixed>, array<string, string>): array<string, mixed>|null $transport */
     public function __construct(

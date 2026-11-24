@@ -52,6 +52,17 @@ $result = $tx->emails->send([
 echo $result['id'], ' ', $result['status'], PHP_EOL;
 ```
 
+## Validate an address
+
+Check an address before you accept it, for example on a signup form. It's free and sends nothing:
+
+```php
+$result = $tx->validate('ada@gmial.com');
+echo $result['verdict'], ' ', $result['suggestion'], PHP_EOL; // risky ada@gmail.com
+```
+
+`verdict` is `valid`, `risky` or `invalid`. Pass `mailboxCheck: true` to also confirm the mailbox exists ($0.01 per answer marked `billed`), and use `$tx->validateBatch([...])` for up to 100 addresses at once. See https://docs.groundmail.dev/validation?utm_source=github&utm_medium=readme&utm_campaign=groundmail-sdks
+
 Using a framework? There's a [Laravel package](https://github.com/Groundmail/groundmail-laravel) and a [Symfony Mailer transport](https://github.com/Groundmail/groundmail-symfony-mailer).
 
 ## Contributing

@@ -72,4 +72,49 @@ class ClientTest < Minitest::Test
     assert_equal 401, error.status
     assert_equal "Invalid API key", error.message
   end
+
+  def validate_client(sent)
+    Groundmail::Client.new(
+      "gm_test_key",
+      base_url: "https://api.example.com",
+      transport: lambda do |method, path, body, _headers|
+        sent << { method: method, path: path, body: body }
+        { "email" => "ada@gmial.com", "verdict" => "invalid", "suggestion" => "ada@gmail.com" }
+      end
+    )
+  end
+
+  def test_validate
+    sent = []
+    result = validate_client(sent).validate("ada@gmial.com")
+
+    assert_equal "invalid", result["verdict"]
+    assert_equal({ method: "POST", path: "/validate", body: { "email" => "ada@gmial.com" } }, sent[0])
+  end
+
+  def test_validate_with_mailbox_check_and_tenant
+    sent = []
+    validate_client(sent).validate("ada@acme.com", mailbox_check: true, tenant: "cust_1")
+
+    assert_equal({ "email" => "ada@acme.com", "mailbox_check" => true, "tenant" => "cust_1" }, sent[0][:body])
+  end
+
+  def test_validate_batch
+    sent = []
+    validate_client(sent).validate_batch(["a@acme.com", "b@acme.com"], mailbox_check: true)
+
+    assert_equal "/validate/batch", sent[0][:path]
+    assert_equal({ "emails" => ["a@acme.com", "b@acme.com"], "mailbox_check" => true }, sent[0][:body])
+  end
+
+  def test_validate_error_raises
+    client = Groundmail::Client.new(
+      "gm_test_key",
+      transport: lambda do |_method, _path, _body, _headers|
+        raise Groundmail::Error.from_response(401, { "error" => { "message" => "Invalid API key" } })
+      end
+    )
+
+    assert_raises(Groundmail::Error) { client.validate("a@b.com") }
+  end
 end

@@ -1,4 +1,4 @@
-use groundmail::{Client, Error, ListOptions, SendEmail};
+use groundmail::{Client, Error, ListOptions, SendEmail, ValidateOptions};
 use serde_json::json;
 use wiremock::matchers::{body_json, header, method, path, query_param};
 use wiremock::{Mock, MockServer, ResponseTemplate};
@@ -157,4 +157,97 @@ async fn removes_a_suppression_by_email() {
         .remove("a@example.com")
         .await
         .unwrap();
+}
+
+#[tokio::test]
+async fn validates_an_address() {
+    let server = MockServer::start().await;
+    Mock::given(method("POST"))
+        .and(path("/validate"))
+        .and(body_json(json!({ "email": "ada@gmial.com" })))
+        .respond_with(ResponseTemplate::new(200).set_body_json(json!({
+            "email": "ada@gmial.com", "verdict": "risky", "suggestion": "ada@gmail.com"
+        })))
+        .expect(1)
+        .mount(&server)
+        .await;
+
+    let result = client(&server)
+        .await
+        .validate("ada@gmial.com", &ValidateOptions::default())
+        .await
+        .unwrap();
+
+    assert_eq!(result["verdict"], json!("risky"));
+    assert_eq!(result["suggestion"], json!("ada@gmail.com"));
+}
+
+#[tokio::test]
+async fn sends_the_mailbox_check_and_tenant_only_when_set() {
+    let server = MockServer::start().await;
+    Mock::given(method("POST"))
+        .and(path("/validate"))
+        .and(body_json(
+            json!({ "email": "ada@acme.com", "mailbox_check": true, "tenant": "cust_1" }),
+        ))
+        .respond_with(ResponseTemplate::new(200).set_body_json(json!({ "verdict": "valid" })))
+        .expect(1)
+        .mount(&server)
+        .await;
+
+    let options = ValidateOptions {
+        mailbox_check: true,
+        tenant: Some("cust_1".to_owned()),
+    };
+    client(&server)
+        .await
+        .validate("ada@acme.com", &options)
+        .await
+        .unwrap();
+}
+
+#[tokio::test]
+async fn validates_a_batch() {
+    let server = MockServer::start().await;
+    Mock::given(method("POST"))
+        .and(path("/validate/batch"))
+        .and(body_json(
+            json!({ "emails": ["a@acme.com", "b@acme.com"], "mailbox_check": true }),
+        ))
+        .respond_with(ResponseTemplate::new(200).set_body_json(json!({ "data": [] })))
+        .expect(1)
+        .mount(&server)
+        .await;
+
+    let options = ValidateOptions {
+        mailbox_check: true,
+        ..ValidateOptions::default()
+    };
+    let result = client(&server)
+        .await
+        .validate_batch(&["a@acme.com", "b@acme.com"], &options)
+        .await
+        .unwrap();
+
+    assert_eq!(result["data"], json!([]));
+}
+
+#[tokio::test]
+async fn returns_a_validation_error() {
+    let server = MockServer::start().await;
+    Mock::given(method("POST"))
+        .and(path("/validate"))
+        .respond_with(ResponseTemplate::new(401).set_body_json(json!({
+            "error": { "message": "Invalid API key", "code": "unauthorized" }
+        })))
+        .mount(&server)
+        .await;
+
+    let error = client(&server)
+        .await
+        .validate("a@b.com", &ValidateOptions::default())
+        .await
+        .unwrap_err();
+
+    assert!(matches!(error, Error::Api { status: 401, .. }));
 }

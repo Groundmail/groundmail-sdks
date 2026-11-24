@@ -113,3 +113,27 @@ impl ListOptions {
         query
     }
 }
+
+/// Options for [`crate::Client::validate`] and [`crate::Client::validate_batch`].
+#[derive(Debug, Clone, Default)]
+pub struct ValidateOptions {
+    /// Also confirm the mailbox exists: $0.01 per answer marked `billed`. Needs pay as you
+    /// go or Dedicated and an `emails:send` key.
+    pub mailbox_check: bool,
+    /// Attribute mailbox checks to one of your tenants (its external id or id).
+    pub tenant: Option<String>,
+}
+
+impl ValidateOptions {
+    /// The options as request fields, leaving out the ones not set.
+    pub(crate) fn fields(&self) -> serde_json::Map<String, Value> {
+        let mut fields = serde_json::Map::new();
+        if self.mailbox_check {
+            fields.insert("mailbox_check".to_owned(), Value::Bool(true));
+        }
+        if let Some(tenant) = self.tenant.as_deref().filter(|tenant| !tenant.is_empty()) {
+            fields.insert("tenant".to_owned(), Value::String(tenant.to_owned()));
+        }
+        fields
+    }
+}

@@ -14,7 +14,7 @@ import (
 const DefaultAPIBaseURL = "https://api.groundmail.dev"
 
 // Version is this SDK's release. Go tags follow the Python package's version.
-const Version = "0.9.3"
+const Version = "0.10.0"
 
 // userAgent tells our SDK from a plain HTTP call.
 var userAgent = "groundmail-go/" + Version + " go/" + strings.TrimPrefix(runtime.Version(), "go")
@@ -102,6 +102,47 @@ func (c *Client) Request(method, path string, body any, headers map[string]strin
 		return nil, err
 	}
 	return out, nil
+}
+
+// ValidateOptions are optional settings for Validate and ValidateBatch.
+type ValidateOptions struct {
+	// MailboxCheck also confirms the mailbox exists: $0.01 per answer marked
+	// "billed". Needs pay as you go or Dedicated and an emails:send key.
+	MailboxCheck bool
+	// Tenant attributes mailbox checks to one of your tenants (its external id or id).
+	Tenant string
+}
+
+// Validate checks one address before you accept it (for example on a signup form).
+// It's free and sends nothing: syntax, mail server, disposable and role addresses,
+// recent hard bounces, and a typo suggestion. The result has "verdict" ("valid",
+// "risky" or "invalid"), "reasons" and "suggestion". opts may be nil.
+func (c *Client) Validate(email string, opts *ValidateOptions) (map[string]any, error) {
+	body := validateBody(opts)
+	body["email"] = email
+	return c.Request(http.MethodPost, "/validate", body, nil)
+}
+
+// ValidateBatch checks up to 100 addresses in one request, each answered as Validate
+// would. The result's "data" holds one result per address, in order. opts may be nil.
+func (c *Client) ValidateBatch(emails []string, opts *ValidateOptions) (map[string]any, error) {
+	body := validateBody(opts)
+	body["emails"] = emails
+	return c.Request(http.MethodPost, "/validate/batch", body, nil)
+}
+
+func validateBody(opts *ValidateOptions) map[string]any {
+	body := map[string]any{}
+	if opts == nil {
+		return body
+	}
+	if opts.MailboxCheck {
+		body["mailbox_check"] = true
+	}
+	if opts.Tenant != "" {
+		body["tenant"] = opts.Tenant
+	}
+	return body
 }
 
 func queryString(params map[string]any) string {

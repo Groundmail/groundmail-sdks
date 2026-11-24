@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0bd9e84ff719c46f6f742fb798aa81ed",
+    "content-hash": "3ec5120ba7a7c6e899ee9eae20d3a8fc",
     "packages": [
         {
             "name": "carbonphp/carbon-doctrine-types",
@@ -451,7 +451,7 @@
                 "reference": "fa382a79eaa8d4177e1e8a5e619be0e81c2f07d1"
             },
             "require": {
-                "groundmail/groundmail": "^0.8.2",
+                "groundmail/groundmail": ">=0.8.2 <1.0",
                 "php": ">=8.1",
                 "symfony/mailer": "^6.2|^7.0",
                 "symfony/mime": "^6.2|^7.0"
